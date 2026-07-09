@@ -1,6 +1,4 @@
 * Zach Archlinux Dotfiles
-#+BEGIN_CALLOUT
-These dotfiles are **not** organised (espacially ~init.el~)
-#+END_CALLOUT
+- These dotfiles are **not** organised (espacially ~init.el~)
 
 If you have any questions/suggestions please create an issue and/or send me an email to ~zacharymd14@gmail.com~.
