@@ -1,3 +1,4 @@
+.env
 .config/emacs/secrets.el
 .config/emacs/*~
 .config/emacs/#*#
