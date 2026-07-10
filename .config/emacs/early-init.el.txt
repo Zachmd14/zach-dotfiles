@@ -13,7 +13,7 @@
 (add-hook 'emacs-startup-hook
           (lambda ()
             (setq gc-cons-threshold 800000) ;; Reset to 800kb
-            (setq file-name-handler-alist default-file-name-handler-alist)))
+            (defvar file-name-handler-alist default-file-name-handler-alist)))
 
 ;; 4. Improve UI performance by disabling early window decorations
 (setq frame-inhibit-implied-resize t)

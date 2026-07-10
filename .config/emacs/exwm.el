@@ -1,6 +1,3 @@
-
-Mon Drive
-
 ;; =============================================================
 ;; exwm.el — EXWM configuration for Zachary's Emacs
 ;; Compatible avec Evil + Ivy + init.el existants
@@ -339,7 +336,13 @@ Mon Drive
             helm-exwm-source
             helm-source-recentf)))
   ;; -- Lancer EXWM ---------------------------------------------
-  ;; Décommente la ligne suivante si tu n'utilises pas `-f exwm-enable`
-  ;; dans ton .xinitrc.exwm
-  (exwm-wm-mode)
+  ;; (exwm-wm-mode)
   )
+(defun my/run-exwm-once-started ()
+  "Safely initialize exwm when the first graphical frame is ready."
+  (run-with-timer 0.5 nil
+		  (lambda ()
+		    (exwm-wm-mode 1)
+		    ))
+  (remove-hook 'server-after-make-frame-hook #'my/run-exwm-once-started))
+(add-hook 'server-after-make-frame-hook #'my/run-exwm-once-started)
