@@ -276,11 +276,7 @@
 
           ;; Terminal
           (,(kbd "s-<return>") . (lambda () (interactive)
-                                   (if (fboundp 'my/vterm-new-unique)
-                                       (my/vterm-new-unique)
-                                     (if (fboundp 'eat)
-					 (eat)
-                                       (vterm)))))
+				   (my/open-new-vterm)))
 
           ;; Navigateur
           (,(kbd "s-b") . (lambda () (interactive)
@@ -324,6 +320,8 @@
           (,(kbd "H-k") . [S-end delete])
           (,(kbd "H-w") . [?\C-c])
           (,(kbd "H-y") . [?\C-v])))
+
+
 
   ;; -- helm-exwm -----------------------------------------------
   (use-package helm-exwm

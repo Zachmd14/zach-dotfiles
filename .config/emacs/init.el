@@ -195,7 +195,6 @@
     "acd" '(anki-editor-cloze-region-dont-incr  :which-key "cloze dont incr")
     "oo"  '(lambda () (interactive) (counsel-find-file "~/org/")
              :which-key "open org file")
-    "tt"  '(vterm                           :which-key "vterm")
     "td"  '(deepseek-query                  :which-key "deepseek")
     "tn"  '(org-num-mode :which-key "toggle numbered headers")
     "tu"  '(vundo                           :which-key "undo graph")
@@ -333,6 +332,11 @@
             (lambda ()
 	      (display-line-numbers-mode -1)
 	      (setq display-line-numbers nil))))
+
+(defun my/open-new-vterm ()
+  "Launch a brand new, uniquely named vterm instance every time."
+  (interactive)
+  (vterm t)) 
 
 ;; (use-package obsidian
 ;;   :ensure t ; Ensure it installs if not present
