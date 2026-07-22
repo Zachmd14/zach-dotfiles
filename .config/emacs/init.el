@@ -336,7 +336,7 @@
 (defun my/open-new-vterm ()
   "Launch a brand new, uniquely named vterm instance every time."
   (interactive)
-  (vterm t)) 
+  (vterm t))
 
 ;; (use-package obsidian
 ;;   :ensure t ; Ensure it installs if not present
@@ -504,8 +504,9 @@
 (use-package org
   :hook (
          (org-mode . org-indent-mode)
-         (org-mode . org-num-mode))
+         )
   :config
+  (setq org-startup-folded 'content)
   (setq org-hide-emphasis-markers t)
   (setq org-image-actual-width '(0.5))
   (setq org-num-skip-unnumbered t)
@@ -635,7 +636,7 @@
             (when (string= org-state "DONE")
 	      (my/archive-done-task))))
 
-(global-set-key (kbd "C-c c n") 'org-capture)
+(global-set-key (kbd "C-c n") 'org-capture)
 
 
 (use-package org-caldav
@@ -653,6 +654,7 @@
 
 (global-set-key (kbd "C-c c s") 'org-caldav-sync)
 (global-set-key (kbd "C-c a") 'org-agenda)
+(setq org-agenda-span 'week)
 
 (with-eval-after-load 'url-dav
   (advice-add 'url-dav-process-DAV:prop :around
@@ -663,7 +665,13 @@
 
 
 (setq calendar-week-start-day 1)
-(run-with-timer 0 (* 45 60) 'org-caldav-sync)  ;; every 45 min
+(add-hook 'emacs-startup-hook
+	  (lambda ()
+	    (run-with-timer 0 (* 45 60) 'org-caldav-sync)  ;; every 45 min
+	    ))
+(setq network-security-level 'low)
+
+
 
 ;; Insert image into org from selection
 (defun my/org-insert-image ()
