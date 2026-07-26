@@ -512,6 +512,7 @@
          (org-mode . org-indent-mode)
          )
   :config
+  (setq-default org-ellipsis " …")
   (setq org-startup-folded 'content)
   (setq org-hide-emphasis-markers t)
   (setq org-image-actual-width '(0.5))
@@ -604,6 +605,95 @@
          "* [%<%Y-%m-%d %a>] %^{Title}\n:PROPERTIES:\n:CREATED: %U\n:CAPTURED: %a\n:END:\n%?"
          :prepend t)))
 
+
+(defun my/svg-tag-timestamp (&rest args)
+  "Create a timestamp SVG tag for the time at point."
+
+  (interactive)
+  (let ((inhibit-read-only t))
+
+    (goto-char (point-min))
+    (while (search-forward-regexp
+            "\\(\([0-9]/[0-9]\):\\)" nil t)
+      (set-text-properties (match-beginning 1) (match-end 1)
+                           `(display ,(svg-tag-make "ANYTIME"
+                                                    :face 'nano-faded
+                                                    :inverse nil
+                                                    :padding 3 :alignment 0))))
+
+    (goto-char (point-min))
+    (while (search-forward-regexp
+            "\\([0-9]+:[0-9]+\\)\\(\\.+\\)" nil t)
+
+      (set-text-properties (match-beginning 1) (match-end 2)
+                           `(display ,(svg-tag-make (match-string 1)
+                                                    :face 'nano-faded
+                                                    :margin 4 :alignment 0))))
+
+    (goto-char (point-min))
+    (while (search-forward-regexp
+            "\\([0-9]+:[0-9]+\\)\\(\\.*\\)" nil t)
+
+      (set-text-properties (match-beginning 1) (match-end 2)
+                           `(display ,(svg-tag-make (match-string 1)
+                                                    :face 'nano-default
+                                                    :inverse t
+                                                    :margin 4 :alignment 0))))
+    (goto-char (point-min))
+    (while (search-forward-regexp
+            "\\([0-9]+:[0-9]+\\)\\(-[0-9]+:[0-9]+\\)" nil t)
+      (let* ((t1 (parse-time-string (match-string 1)))
+             (t2 (parse-time-string (substring (match-string 2) 1)))
+             (t1 (+ (* (nth 2 t1) 60) (nth 1 t1)))
+             (t2 (+ (* (nth 2 t2) 60) (nth 1 t2)))
+             (d  (- t2 t1)))
+
+        (set-text-properties (match-beginning 1) (match-end 1)
+                             `(display ,(svg-tag-make (match-string 1)
+                                                      :face 'nano-faded
+                                                      :crop-right t)))
+        ;; 15m: ¼, 30m:½, 45m:¾
+        (if (< d 60)
+            (set-text-properties (match-beginning 2) (match-end 2)
+                                 `(display ,(svg-tag-make (format "%2dm" d)
+                                                          :face 'nano-faded
+                                                          :crop-left t :inverse t)))
+          (set-text-properties (match-beginning 2) (match-end 2)
+                               `(display ,(svg-tag-make (format "%1dH" (/ d 60))
+                                                        :face 'nano-faded
+                                                        :crop-left t :inverse t
+                                                        :padding 2 :alignment 0))))))))
+
+(add-hook 'org-agenda-mode-hook #'my/svg-tag-timestamp)
+(advice-add 'org-agenda-redo :after #'my/svg-tag-timestamp)
+
+
+(defun my/org-agenda-custom-date ()
+  (interactive)
+  (let* ((timestamp (org-entry-get nil "TIMESTAMP"))
+         (timestamp (or timestamp (org-entry-get nil "DEADLINE"))))
+    (if timestamp
+        (let* ((delta (- (org-time-string-to-absolute (org-read-date nil nil timestamp))
+                         (org-time-string-to-absolute (org-read-date nil nil ""))))
+               (delta (/ (+ 1 delta) 30.0))
+               (face (cond ;; ((< delta 0.25) 'nano-popout)
+                      ;; ((< delta 0.50) 'nano-salient)
+                      ((< delta 1.00) 'nano-default)
+                      (t 'nano-faded))))
+          (concat
+           (propertize " " 'face nil
+                       'display (svg-lib-progress-pie
+                                 delta nil
+                                 :background (face-background face nil 'default)
+                                 :foreground (face-foreground face)
+                                 :margin 0 :stroke 2 :padding 1))
+           " "
+           (propertize
+            (format-time-string "%d/%m" (org-time-string-to-time timestamp))
+            'face 'nano-popout)))
+      "     ")))
+
+
 (defun org-capture-bookmark-tags ()
   "Get tags from existing bookmarks and prompt for tags with completion."
   (save-window-excursion
@@ -692,6 +782,7 @@
 (with-eval-after-load 'org
   (define-key org-mode-map (kbd "C-c c C-i") #'my/org-insert-image))
 
+
 (use-package org-modern
   :custom
   (org-modern-hide-stars nil)
@@ -703,6 +794,8 @@
 (use-package org-modern-indent
   :load-path "/home/zach/.config/emacs/lisp/org-modern-indent"
   :config (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
+(use-package svg-lib :ensure t)
+(use-package svg-tag-mode :ensure t)
 
 (use-package org-fragtog
   :after org
@@ -954,8 +1047,9 @@
 		       org-super-agenda org-view-mode ox-hugo
 		       page-break-lines perspective playerctl
 		       projectile rainbow-mode shrface
-		       smooth-scrolling surround volume vterm vundo
-		       wallabag xenops yasnippet-snippets))
+		       smooth-scrolling surround svg-lib svg-tag-mode
+		       volume vterm vundo wallabag xenops
+		       yasnippet-snippets))
  '(package-vc-selected-packages
    '((reader :url "https://codeberg.org/divyaranjan/emacs-reader" :make
 	     "all")))
