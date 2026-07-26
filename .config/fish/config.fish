@@ -797,3 +797,4 @@ complete -c yt-x --no-files --short-option S --long-option search --description 
 complete -c yt-x --no-files --short-option z --long-option zsh --description 'print zsh completions' --condition '__fish_seen_subcommand_from completions'
 complete -c yt-x --no-files --short-option b --long-option bash --description 'print bash completions' --condition '__fish_seen_subcommand_from completions'
 complete -c yt-x --no-files --short-option f --long-option fish --description 'print fish completions' --condition '__fish_seen_subcommand_from completions'
+set -U fish_autosuggestion_enabled 0
