@@ -357,6 +357,12 @@
 ;;   (global-set-key (kbd "C-c o v")   'obsidian-change-vault)
 ;;   (global-set-key (kbd "C-c o b") 'obsidian-backlink-jump))
 
+(use-package load-env-vars
+  :ensure t
+  :config
+  ;; Point to the location of your .env file
+  (load-env-vars "~/.env"))
+
 (use-package deepseek
   :load-path "/home/zach/.config/emacs/lisp/deepseek.el")
 
@@ -942,13 +948,14 @@
 		       hackernews helm-exwm helm-lsp helpful
 		       impatient-mode indent-guide ivy-posframe
 		       ivy-rich latex-preview-pane leetcode ligature
-		       lsp-ivy lsp-ui magit minimap mu4e nov obsidian
-		       olivetti org-anki org-bullets org-caldav
-		       org-fragtog org-modern org-super-agenda
-		       org-view-mode ox-hugo page-break-lines
-		       perspective playerctl projectile rainbow-mode
-		       shrface smooth-scrolling surround volume vterm
-		       vundo wallabag xenops yasnippet-snippets))
+		       load-env-vars lsp-ivy lsp-ui magit minimap mu4e
+		       nov obsidian olivetti org-anki org-bullets
+		       org-caldav org-fragtog org-modern
+		       org-super-agenda org-view-mode ox-hugo
+		       page-break-lines perspective playerctl
+		       projectile rainbow-mode shrface
+		       smooth-scrolling surround volume vterm vundo
+		       wallabag xenops yasnippet-snippets))
  '(package-vc-selected-packages
    '((reader :url "https://codeberg.org/divyaranjan/emacs-reader" :make
 	     "all")))
