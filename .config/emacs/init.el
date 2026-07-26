@@ -1048,7 +1048,7 @@
 		       page-break-lines perspective playerctl
 		       projectile rainbow-mode shrface
 		       smooth-scrolling surround svg-lib svg-tag-mode
-		       volume vterm vundo wallabag xenops
+		       valign volume vterm vundo wallabag xenops
 		       yasnippet-snippets))
  '(package-vc-selected-packages
    '((reader :url "https://codeberg.org/divyaranjan/emacs-reader" :make
