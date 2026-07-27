@@ -5,6 +5,7 @@
 (setq initial-scratch-message
       "; Welcome to Emacs.
 ; Use 'C-x C-f' to open a file.")
+(setq project-vc-extra-root-markers '(".project"))
 
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
