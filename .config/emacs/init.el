@@ -577,6 +577,42 @@
 (setq org-capture-templates
       '(("t" "Todo" entry
          (file+headline "~/org/inbox.org" "Inbox")
+         "* TODO %^{Task}\n:PROPERTIES:\n:CREATED: %U\n:CAPTURED: %a\n:END:\n%?\n"
+         :empty-lines 1)
+
+        ("e" "Event" entry
+         (file+headline "~/org/calendar.org" "Events")
+         "* %^{Event}\n%^{SCHEDULED}T\n:PROPERTIES:\n:CREATED: %U\n:CAPTURED: %a\n:END:\n%?\n"
+         :empty-lines 1)
+
+        ("d" "Deadline" entry
+         (file+headline "~/org/calendar.org" "Deadlines")
+         "* TODO %^{Task}\nDEADLINE: %^{Deadline}T\n:PROPERTIES:\n:CREATED: %U\n:CAPTURED: %a\n:END:\n%?\n"
+         :empty-lines 1)
+
+        ("p" "Project" entry
+         (file+headline "~/org/projects.org" "Projects")
+         "* PROJ %^{Project name}\n:PROPERTIES:\n:CREATED: %U\n:CAPTURED: %a\n:END:\n** TODO %?\n"
+         :empty-lines 1)
+
+        ("i" "Idea" entry
+         (file+headline "~/org/ideas.org" "Ideas")
+         "** IDEA %^{Idea}\n:PROPERTIES:\n:CREATED: %U\n:CAPTURED: %a\n:END:\n%?\n"
+         :empty-lines 1)
+
+        ("b" "Bookmark" entry
+         (file+headline "~/org/bookmarks.org" "Inbox")
+         "** [[%^{URL}][%^{Title}]]\n:PROPERTIES:\n:CREATED: %U\n:TAGS: %(org-capture-bookmark-tags)\n:END:\n\n"
+         :empty-lines 0)
+
+        ("n" "Note" entry
+         (file+headline "~/org/notes.org" "Inbox")
+         "* [%<%Y-%m-%d %a>] %^{Title}\n:PROPERTIES:\n:CREATED: %U\n:CAPTURED: %a\n:END:\n%?\n"
+         :prepend t
+         :empty-lines 1)))
+(setq org-capture-templates
+      '(("t" "Todo" entry
+         (file+headline "~/org/inbox.org" "Inbox")
          "* TODO %^{Task}\n:PROPERTIES:\n:CREATED: %U\n:CAPTURED: %a\n:END:\n%?")
 
         ("e" "Event" entry
