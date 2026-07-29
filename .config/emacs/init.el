@@ -1,6 +1,12 @@
+;; ---------------------------------------------------------------------------
+;; File loading
+;; ---------------------------------------------------------------------------
 (load-file "~/.config/emacs/secrets.el")
 (load-file "~/.config/emacs/exwm.el")
 
+;; ---------------------------------------------------------------------------
+;; Startup & UI basics
+;; ---------------------------------------------------------------------------
 (setq inhibit-startup-message t)
 (setq initial-scratch-message
       "; Welcome to Emacs.
@@ -26,6 +32,9 @@
   (set-face-foreground face (face-attribute 'default :background)))
 (set-face-background 'fringe (face-attribute 'default :background))
 
+;; ---------------------------------------------------------------------------
+;; Fonts & encoding
+;; ---------------------------------------------------------------------------
 (set-face-attribute 'default nil :font "Fira Code")
 (set-fontset-font "fontset-default" 'unicode "Noto Color Emoji" nil 'prepend)
 (set-fontset-font "fontset-default" 'symbol  "Noto Color Emoji" nil 'prepend)
@@ -38,6 +47,9 @@
 (prefer-coding-system 'utf-8)
 (setq default-process-coding-system '(utf-8 . utf-8))
 
+;; ---------------------------------------------------------------------------
+;; Package management
+;; ---------------------------------------------------------------------------
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
                          ("org"   . "https://orgmode.org/elpa/")
 			 ("nongnu" . "https://elpa.nongnu.org/nongnu/")
@@ -52,6 +64,9 @@
 
 (setq use-package-always-ensure t)
 
+;; ---------------------------------------------------------------------------
+;; Theme — Doom themes
+;; ---------------------------------------------------------------------------
 (use-package doom-themes
   :custom
   (doom-themes-enable-bold t)
@@ -79,19 +94,26 @@
 (global-set-key (kbd "C-c t w") 'switch-to-doom-homage-white)
 (global-set-key (kbd "C-c t b") 'switch-to-doom-homage-black)
 
+;; ---------------------------------------------------------------------------
+;; Modeline — Doom modeline
+;; ---------------------------------------------------------------------------
 (use-package doom-modeline
   :defer t
   :init (doom-modeline-mode 1)
   :custom (doom-modeline-height 15))
 
-;; (use-package dashboard-hackernews
-;;   :config (require 'json))
+;; ---------------------------------------------------------------------------
+;; AI — DeepSeek
+;; ---------------------------------------------------------------------------
 
-;; (require 'dashboard)
-;; (require 'dashboard-hackernews)
+(use-package deepseek
+  :load-path "/home/zach/.config/emacs/lisp/deepseek.el")
+
+;; ---------------------------------------------------------------------------
+;; Dashboard
+;; ---------------------------------------------------------------------------
 
 (use-package dashboard
-  ;; :after dashboard-hackernews
   :defer t
   :config
   (dashboard-setup-startup-hook)
@@ -114,11 +136,9 @@
                                     dashboard-insert-newline))
   (setq dashboard-items '((recents   . 4)
 			  (agenda . 9)
-                          ;; (hackernews . 5)
 			  ))
   (setq dashboard-item-shortcuts '((recents   . "r")
 				   (agenda . "a")
-				   ;; (hackernews . "h")
 				   ))
   (setq dashboard-display-icons-p t)
   (setq dashboard-icon-type 'nerd-icons)
@@ -130,6 +150,9 @@
             (require 'dashboard)
             (dashboard-open)))
 
+;; ---------------------------------------------------------------------------
+;; Evil mode — Vim keybindings
+;; ---------------------------------------------------------------------------
 (use-package evil
   :init
   (setq evil-want-integration t)
@@ -149,6 +172,9 @@
   :after evil
   :config (evil-collection-init))
 
+;; ---------------------------------------------------------------------------
+;; Navigation — Flash, Hydra
+;; ---------------------------------------------------------------------------
 (use-package flash
   :commands (flash-jump flash-treesitter)
   :init
@@ -167,6 +193,9 @@
   ("k" text-scale-decrease "out")
   ("f" nil "finished" :exit t))
 
+;; ---------------------------------------------------------------------------
+;; Leader keys — General
+;; ---------------------------------------------------------------------------
 (use-package general
   :after evil
   :config
@@ -205,12 +234,18 @@
     "ty"  '(counsel-yank-pop                :which-key "browse kill-ring")
     ))
 
+;; ---------------------------------------------------------------------------
+;; Global keybindings
+;; ---------------------------------------------------------------------------
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 (global-set-key (kbd "C-c e r") 'eval-region)
 (global-set-key (kbd "C-c e b") 'eval-buffer)
 (global-set-key (kbd "M-s s") 'shell-command-on-region)
 (global-set-key (kbd "M-s a") 'async-shell-command)
 
+;; ---------------------------------------------------------------------------
+;; Tab bar
+;; ---------------------------------------------------------------------------
 (define-prefix-command 'my-tab-map)
 (global-set-key (kbd "s-<tab>") 'my-tab-map)
 (define-key my-tab-map (kbd "s") 'tab-switch)
@@ -222,6 +257,9 @@
 (define-key my-tab-map (kbd "r") 'tab-bar-rename-tab)
 (define-key my-tab-map (kbd "d") 'tab-bar-duplicate-tab)
 
+;; ---------------------------------------------------------------------------
+;; Completion — Ivy, Counsel
+;; ---------------------------------------------------------------------------
 (use-package ivy
   :diminish
   :bind (("C-s" . swiper)
@@ -248,6 +286,9 @@
   (counsel-linux-app-format-function #'counsel-linux-app-format-function-name-only)
   :config (counsel-mode 1))
 
+;; ---------------------------------------------------------------------------
+;; Completion — Company
+;; ---------------------------------------------------------------------------
 
 (use-package company
   :config
@@ -274,6 +315,9 @@
                 company-etags
                 company-dabbrev-code))
 
+;; ---------------------------------------------------------------------------
+;; LSP & Debug
+;; ---------------------------------------------------------------------------
 (use-package lsp-mode
   :defer t
   :init (setq lsp-keymap-prefix "C-c l")
@@ -308,11 +352,17 @@
 	      (setq-local company-backends '((company-capf :with company-yasnippet)
                                              (company-files :with company-yasnippet))))))
 
+;; ---------------------------------------------------------------------------
+;; Snippets — YASnippet
+;; ---------------------------------------------------------------------------
 (use-package yasnippet
   :hook ((text-mode prog-mode conf-mode snippet-mode) . yas-minor-mode-on)
   :init (setq yas-snippet-dir "~/.config/emacs/snippets")
   )
 
+;; ---------------------------------------------------------------------------
+;; Formatting — Format-all
+;; ---------------------------------------------------------------------------
 (use-package format-all
   :preface
   (defun ian/format-code ()
@@ -325,8 +375,14 @@
   (global-set-key (kbd "M-F") #'ian/format-code)
   (add-hook 'prog-mode-hook #'format-all-ensure-formatter))
 
+;; ---------------------------------------------------------------------------
+;; Projects — Projectile
+;; ---------------------------------------------------------------------------
 (use-package projectile)
 
+;; ---------------------------------------------------------------------------
+;; Terminal — VTerm
+;; ---------------------------------------------------------------------------
 (use-package vterm
   :config
   (add-hook 'vterm-mode-hook
@@ -339,34 +395,17 @@
   (interactive)
   (vterm t))
 
-;; (use-package obsidian
-;;   :ensure t ; Ensure it installs if not present
-;;   :config
-;;   (setq obsidian-directory "/home/zach/Documents/Obsidian/")
-;;   (setq markdown-enable-wiki-links t)
-
-;;   ;; Initialize mode
-;;   (obsidian-mode 1)
-
-;;   ;; Keybindings
-;;   (global-set-key (kbd "C-c o c") 'obsidian-capture)
-;;   (global-set-key (kbd "C-c o l") 'obsidian-insert-link)
-;;   (global-set-key (kbd "C-c o o") 'obsidian-follow-link-at-point)
-;;   (global-set-key (kbd "C-c o f") 'obsidian-jump)
-;;   (global-set-key (kbd "C-c o s")   'obsidian-search)
-;;   (global-set-key (kbd "C-c o m") 'obsidian-move-file)
-;;   (global-set-key (kbd "C-c o v")   'obsidian-change-vault)
-;;   (global-set-key (kbd "C-c o b") 'obsidian-backlink-jump))
-
+;; ---------------------------------------------------------------------------
+;; Environment — Load-env-vars
+;; ---------------------------------------------------------------------------
 (use-package load-env-vars
   :ensure t
   :config
-  ;; Point to the location of your .env file
   (load-env-vars "~/.env"))
 
-(use-package deepseek
-  :load-path "/home/zach/.config/emacs/lisp/deepseek.el")
-
+;; ---------------------------------------------------------------------------
+;; Which-key
+;; ---------------------------------------------------------------------------
 (use-package which-key
   :defer 0
   :diminish which-key-mode
@@ -374,6 +413,11 @@
   (which-key-mode)
   (setq which-key-idle-delay 0.5))
 
+;; ---------------------------------------------------------------------------
+;; Utility packages — Vundo, Recentf, Browse-kill-ring, Flex-autopair,
+;;                    Page-break-lines, Nerd-icons, All-the-icons-dired,
+;;                    Surround, Google-translate, Impatient-mode
+;; ---------------------------------------------------------------------------
 (use-package vundo)
 (use-package recentf)
 (global-set-key (kbd "C-x C-r") 'recentf-open)
@@ -393,20 +437,9 @@
 
 (use-package impatient-mode)
 
-;; (defun my-start-live-preview ()
-;;   "Start HTTP server, enable impatient-mode, and open Firefox."
-;;   (interactive)
-;;   (unless (require 'simple-httpd nil t)
-;;     (error "simple-httpd not available — install via M-x package-install"))
-;;   (unless (require 'impatient-mode nil t)
-;;     (error "impatient-mode not available — install via M-x package-install"))
-;;   (unless (httpd-running-p)
-;;     (httpd-start)
-;;     (message "HTTP server started on port 8080"))
-;;   (impatient-mode 1)
-;;   (if (executable-find "firefox")
-;;       (browse-url-firefox "http://localhost:8080/imp")
-;;     (error "Firefox not found")))
+;; ---------------------------------------------------------------------------
+;; Browser & search
+;; ---------------------------------------------------------------------------
 
 (defvar my-search-engine-url "https://duckduckgo.com/?t=ffab&q=%s"
   "Search engine URL template. %s will be replaced with the query.")
@@ -424,6 +457,9 @@
          (format my-search-engine-url
                  (url-hexify-string query)))))))
 
+;; ---------------------------------------------------------------------------
+;; GDB debugging
+;; ---------------------------------------------------------------------------
 (setq gdb-many-windows t)
 (setq gdb-restore-windows t)
 
@@ -478,14 +514,24 @@
 (define-key gdb-map (kbd "b") 'my/gud-toggle-break)
 (define-key gdb-map (kbd "q") 'my/kill-gdb-buffers)
 
+;; ---------------------------------------------------------------------------
+;; LaTeX & PDF
+;; ---------------------------------------------------------------------------
 
 (setq TeX-PDF-mode t)
 (setq TeX-source-correlate-mode t)
 
 (setq TeX-view-program-selection '((output-pdf "Zathura")))
+
+;; ---------------------------------------------------------------------------
+;; Markdown
+;; ---------------------------------------------------------------------------
 (with-eval-after-load 'markdown-mode
   (evil-define-key 'normal markdown-mode-map (kbd "q") 'self-insert-command))
 
+;; ---------------------------------------------------------------------------
+;; Misc UI & performance
+;; ---------------------------------------------------------------------------
 (global-set-key (kbd "C-c w o") 'eww)
 (setq scroll-step 1)
 (setq scroll-conservatively 10000)
@@ -505,6 +551,10 @@
 (display-time-mode 1)
 
 (add-hook 'after-init-hook #'fancy-battery-mode)
+
+;; ---------------------------------------------------------------------------
+;; Org mode — core
+;; ---------------------------------------------------------------------------
 
 (setq org-directory "~/org")
 
@@ -529,6 +579,9 @@
     (add-to-list 'org-latex-packages-alist '("" "mathrsfs"  t))
     (add-to-list 'org-latex-packages-alist '("" "mhchem"    t))))
 
+;; ---------------------------------------------------------------------------
+;; Org agenda
+;; ---------------------------------------------------------------------------
 (add-hook 'org-agenda-mode-hook
           (lambda ()
             (visual-line-mode -1)
@@ -567,14 +620,14 @@
 		      )))))
 
 
-;; Remove Scheduled tag
 (setq org-agenda-scheduled-leaders '("" ""))
-;; Remove holidays from agenda
 (setq org-agenda-include-diary nil)
 
 (setq org-agenda-file "~/org/calendar.org")
 
-;; Capture templates
+;; ---------------------------------------------------------------------------
+;; Org capture
+;; ---------------------------------------------------------------------------
 (setq org-capture-templates
       '(("t" "Todo" entry
          (file+headline "~/org/inbox.org" "Inbox")
@@ -642,6 +695,9 @@
          "* [%<%Y-%m-%d %a>] %^{Title}\n:PROPERTIES:\n:CREATED: %U\n:CAPTURED: %a\n:END:\n%?"
          :prepend t)))
 
+;; ---------------------------------------------------------------------------
+;; Org agenda styling — SVG tags
+;; ---------------------------------------------------------------------------
 
 (defun my/svg-tag-timestamp (&rest args)
   "Create a timestamp SVG tag for the time at point."
@@ -689,7 +745,6 @@
                              `(display ,(svg-tag-make (match-string 1)
                                                       :face 'nano-faded
                                                       :crop-right t)))
-        ;; 15m: ¼, 30m:½, 45m:¾
         (if (< d 60)
             (set-text-properties (match-beginning 2) (match-end 2)
                                  `(display ,(svg-tag-make (format "%2dm" d)
@@ -713,10 +768,9 @@
         (let* ((delta (- (org-time-string-to-absolute (org-read-date nil nil timestamp))
                          (org-time-string-to-absolute (org-read-date nil nil ""))))
                (delta (/ (+ 1 delta) 30.0))
-               (face (cond ;; ((< delta 0.25) 'nano-popout)
-                      ;; ((< delta 0.50) 'nano-salient)
-                      ((< delta 1.00) 'nano-default)
-                      (t 'nano-faded))))
+               (face (cond
+                       ((< delta 1.00) 'nano-default)
+                       (t 'nano-faded))))
           (concat
            (propertize " " 'face nil
                        'display (svg-lib-progress-pie
@@ -735,7 +789,6 @@
   "Get tags from existing bookmarks and prompt for tags with completion."
   (save-window-excursion
     (let ((tags-list '()))
-      ;; Collect existing tags
       (with-current-buffer (find-file-noselect "~/org/bookmarks.org")
         (save-excursion
           (goto-char (point-min))
@@ -743,27 +796,20 @@
             (let ((tag-string (match-string 1)))
 	      (dolist (tag (split-string tag-string "[,;]" t "[[:space:]]"))
                 (push (string-trim tag) tags-list))))))
-      ;; Remove duplicates and sort
       (setq tags-list (sort (delete-dups tags-list) 'string<))
-      ;; Prompt user with completion
       (let ((selected-tags (completing-read-multiple "Tags (comma-separated): " tags-list)))
-        ;; Return as a comma-separated string
         (mapconcat 'identity selected-tags ", ")))))
 
-;; Set archive location to done.org under current date
 (defun my/archive-done-task ()
   "Archive current task to done.org under today's date"
   (interactive)
   (let* ((date-header (format-time-string "%Y-%m-%d %A"))
          (archive-file (expand-file-name "~/org/done.org"))
          (location (format "%s::* %s" archive-file date-header)))
-    ;; Add COMPLETED property if it doesn't exist
     (org-set-property "COMPLETED" (format-time-string "[%Y-%m-%d %a %H:%M]"))
-    ;; Set archive location and archive
     (setq org-archive-location location)
     (org-archive-subtree)))
 
-;; Automatically archive when marked DONE, except for habits
 (add-hook 'org-after-todo-state-change-hook
           (lambda ()
             (when (string= org-state "DONE")
@@ -771,6 +817,9 @@
 
 (global-set-key (kbd "C-c n") 'org-capture)
 
+;; ---------------------------------------------------------------------------
+;; Org caldav — iCloud calendar sync
+;; ---------------------------------------------------------------------------
 
 (use-package org-caldav
   :ensure t
@@ -800,13 +849,14 @@
 (setq calendar-week-start-day 1)
 (add-hook 'emacs-startup-hook
 	  (lambda ()
-	    (run-with-timer 0 (* 45 60) 'org-caldav-sync)  ;; every 45 min
+	    (run-with-timer 0 (* 45 60) 'org-caldav-sync)
 	    ))
 (setq network-security-level 'low)
 
+;; ---------------------------------------------------------------------------
+;; Org images
+;; ---------------------------------------------------------------------------
 
-
-;; Insert image into org from selection
 (defun my/org-insert-image ()
   "Select and insert an image into org file."
   (interactive)
@@ -815,10 +865,12 @@
       (insert (format "[[file:%s]]\n" selected-file))
       (org-display-inline-images))))
 
-;; Keybinds for org mode
 (with-eval-after-load 'org
   (define-key org-mode-map (kbd "C-c c C-i") #'my/org-insert-image))
 
+;; ---------------------------------------------------------------------------
+;; Org styling — org-modern, svg, org-fragtog, indent-guide
+;; ---------------------------------------------------------------------------
 
 (use-package org-modern
   :custom
@@ -840,6 +892,10 @@
 
 (use-package indent-guide)
 (use-package aggressive-indent)
+
+;; ---------------------------------------------------------------------------
+;; Org LaTeX export
+;; ---------------------------------------------------------------------------
 
 (defhydra hydra-org-latex (:color blue :hint nil)
   ("p" org-latex-preview "toggle all previews")
@@ -889,24 +945,21 @@
 			 ("\\subsection{%s}" . "\\subsection*{%s}")
 			 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))))))
 
-;;; Org-roam
+;; ---------------------------------------------------------------------------
+;; Org roam
+;; ---------------------------------------------------------------------------
 (use-package org-roam
   :custom
-  ;; Set your org-roam directory
   (org-roam-directory "~/org/roam")
 
-  ;; Explicitly use the built-in SQLite connector
   (org-roam-database-connector 'sqlite-builtin)
 
-  ;; Set an absolute path for the database file
   (org-roam-db-location (expand-file-name "org-roam.db" org-roam-directory))
 
   :config
-  ;; Make sure the directory exists
   (unless (file-exists-p org-roam-directory)
     (make-directory org-roam-directory t))
 
-  ;; Add error handling for database operations
   (advice-add 'org-roam-db-query :around
 	      (lambda (fn &rest args)
                 (condition-case err
@@ -915,10 +968,8 @@
                    (message "Database error in org-roam: %S" err)
                    nil))))
 
-  ;; Enable auto-sync mode to keep the database updated
   (org-roam-db-autosync-mode +1))
 
-;; Org-Roam UI setup - only load after org-roam is properly initialized
 (use-package websocket
   :after org-roam)
 
@@ -930,11 +981,6 @@
         org-roam-ui-update-on-save t
         org-roam-ui-open-on-start t))
 
-;; org-download customizations
-;; (require 'org-download)
-;; (setq-default org-download-screenshot-method "scrot -s %s")
-
-;; Debugging function for SQLite issues
 (defun debug-org-roam-db ()
   "Debug function to test org-roam database connection."
   (interactive)
@@ -948,55 +994,26 @@
         (message "Database synced successfully!"))
     (error (message "Database sync error: %S" err))))
 
-;; Add these standard Org-roam keybindings
 (global-set-key (kbd "C-c c r f") 'org-roam-node-find)
 (global-set-key (kbd "C-c c r i") 'org-roam-node-insert)
 (global-set-key (kbd "C-c c r c") 'org-roam-capture)
 (global-set-key (kbd "C-c c r l") 'org-roam-buffer-toggle)
 
-;; ;;; Anki (org-mode integration)
-
-;; (use-package anki-editor
-;;   :after org
-;;   :hook (org-capture-after-finalize . anki-editor-reset-cloze-number)
-;;   :config
-;;   (setq anki-editor-create-decks t
-;;         anki-editor-org-tags-as-anki-tags t)
-
-;;   (defun anki-editor-cloze-region-auto-incr (&optional _arg)
-;;     "Cloze region without hint and increase card number."
-;;     (interactive)
-;;     (anki-editor-cloze-region my-anki-editor-cloze-number "")
-;;     (setq my-anki-editor-cloze-number (1+ my-anki-editor-cloze-number))
-;;     (forward-sexp))
-
-;;   (defun anki-editor-cloze-region-dont-incr (&optional _arg)
-;;     "Cloze region without hint using the previous card number."
-;;     (interactive)
-;;     (anki-editor-cloze-region (1- my-anki-editor-cloze-number) "")
-;;     (forward-sexp))
-
-;;   (defun anki-editor-reset-cloze-number (&optional arg)
-;;     "Reset cloze number to ARG or 1."
-;;     (interactive)
-;;     (setq my-anki-editor-cloze-number (or arg 1)))
-
-;;   (defun anki-editor-push-tree ()
-;;     "Push all notes under a tree."
-;;     (interactive)
-;;     (anki-editor-push-notes '(4))
-;;     (anki-editor-reset-cloze-number))
-
-;;   (anki-editor-reset-cloze-number))
+;; ---------------------------------------------------------------------------
+;; Markdown — evil keybinding
+;; ---------------------------------------------------------------------------
 (with-eval-after-load 'markdown-mode
   (evil-define-key 'normal markdown-mode-map (kbd "q") nil)
   (define-key markdown-mode-map (kbd "q") 'self-insert-command))
 
+;; ---------------------------------------------------------------------------
+;; Performance tweaks
+;; ---------------------------------------------------------------------------
 (setq-default bidi-display-reordering 'left-to-right
 	      bidi-paragraph-direction 'left-to-right)
 (setq bidi-inhibit-bpa t)
 
-(setq read-process-output-max (* 4 1024 1024)) ; 4MB
+(setq read-process-output-max (* 4 1024 1024))
 
 (setq-default cursor-in-non-selected-windows nil)
 
@@ -1006,6 +1023,10 @@
 
 (add-hook 'after-save-hook
 	  #'executable-make-buffer-file-executable-if-script-p)
+
+;; ---------------------------------------------------------------------------
+;; Winner mode — undo/redo window configurations
+;; ---------------------------------------------------------------------------
 (winner-mode +1)
 
 (defun toggle-delete-other-windows ()
@@ -1020,9 +1041,9 @@
 
 (setq gc-cons-threshold 50000000)
 
-;;; ============================================================
-;;; SECTION 14: Custom (auto-generated — do not edit manually)
-;;; ============================================================
+;; ============================================================================
+;; CUSTOM — auto-generated, do not edit manually
+;; ============================================================================
 
 
 (custom-set-variables
@@ -1078,17 +1099,19 @@
 		       impatient-mode indent-guide ivy-posframe
 		       ivy-rich latex-preview-pane leetcode ligature
 		       load-env-vars lsp-ivy lsp-ui magit minimap
-		       modusregel mu4e nov obsidian olivetti org-anki
-		       org-bullets org-caldav org-fragtog org-modern
-		       org-super-agenda org-view-mode ox-hugo
-		       page-break-lines perspective playerctl
-		       projectile rainbow-mode shrface
+		       modusregel mu4e nov obsidian olivetti opencode
+		       org-anki org-bullets org-caldav org-fragtog
+		       org-modern org-super-agenda org-view-mode
+		       ox-hugo page-break-lines perspective playerctl
+		       projectile rainbow-mode shrface sleek-modeline
 		       smooth-scrolling surround svg-lib svg-tag-mode
 		       valign volume vterm vundo wallabag xenops
 		       yasnippet-snippets))
  '(package-vc-selected-packages
-   '((reader :url "https://codeberg.org/divyaranjan/emacs-reader" :make
-	     "all")))
+   '((opencode :url "https://github.com/colobas/opencode.el" :branch
+	       "main")
+     (reader :url "https://codeberg.org/divyaranjan/emacs-reader"
+	     :make "all")))
  '(pdf-latex-command "pdflatex")
  '(scroll-margin 7)
  '(shell-escape-mode "-shell-escape")
@@ -1100,6 +1123,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(lsp-headerline-breadcrumb-path-face ((t (:inherit font-lock-string-face :family "Fira Code")))))
+ '(lsp-headerline-breadcrumb-path-face ((t (:inherit font-lock-string-face :family "Fira Code"))))
+ '(mode-line ((t (:background "#282c34"))))
+ '(mode-line-inactive ((t (:background "#1c1f24")))))
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
