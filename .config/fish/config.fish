@@ -1,20 +1,33 @@
-# test
-# ~/.config/fish/config.fish
+
+# =============================================================================
+# Fish Shell Configuration
+# Main config file — loaded on every interactive shell startup.
+# Location: ~/.config/fish/config.fish
+# Last reviewed: 2026-07-29
+# =============================================================================
+
+# --- Private / Local Configuration ---
+# (ssh IPs, secrets, machine-specific values)
 
 if test -f ~/.config/fish/private.fish
     source ~/.config/fish/private.fish
 end
 
 # set caps lock as escape
+
 # setxkbmap -option caps:escape
 
+# --- Audio / PipeWire ---
 # export fzf settigns
 # export FZF_DEFAULT_OPTS="--height=90% --layout=reverse --info=inline --border --margin=1 --padding=1 --preview 'bat --style=plain --color=always {}' --preview-window=right:55%"
 
 export PIPEWIRE_LATENCY="128/48000"  # Adjust buffer size if needed
 export JACK_NO_AUDIO_RESERVATION=1    # Prevents JACK from hogging audio
 
-# Bob the fish config
+
+# --- Bob the Fish Theme ---
+# ⚠ NOTE: oh-my-fish is loaded via conf.d/omf.fish; Tide is the active prompt
+#   but these bobthefish theme vars remain — verify if still needed.
 set -g theme_color_scheme dark
 set -g theme_display_git_untracked no
 set -g theme_display_git_ahead_verbose yes
@@ -27,22 +40,29 @@ set -g theme_title_display_path no
 set -g theme_date_format "+%a %H:%M"
 set -g theme_avoid_ambiguous_glyphs yes
 set -g default_user zach
+
+# --- PATH (early additions) ---
 set -gx PATH $HOME/.cargo/bin $PATH
 set -Ux fish_user_paths $HOME/.config/emacs/bin $fish_user_paths
 
 
-# terminal startup commands
+
+# --- Interactive Shell Guard ---
+# Only configure interactive features when running as an interactive shell.
 
 # If not running interactively, don't do anything
 if status is-interactive
 
+
+    # --- Environment Variables ---
     # Set environment variables
     # set -gx EDITOR "emacsclient -c"
     set -gx EDITOR "nvim"
     set -gx PAGER less
     set -g fish_greeting ""
 
-    # Add directories to PATH
+
+    # --- PATH Additions ---
     set -gx PATH /usr/local/bin/ $PATH
     set -gx PATH $HOME/.local/bin $PATH
     set -gx PATH $HOME/usr/bin $PATH
@@ -51,7 +71,8 @@ if status is-interactive
     set -gx PATH $HOME/Desktop/ $PATH
     set -gx PROTON "/usr/share/steam/compatibilitytools.d/proton_tkg_makepkg/proton"
 
-    # Aliases
+    # --- Abbreviations / Aliases ---
+
     abbr sshmac 'ssh -p 32767 zach@$SSH_MAC_IP'
     abbr gcc 'gcc -Wall -g'
     abbr et 'emacsclient -c -nw'
@@ -133,9 +154,15 @@ if status is-interactive
     abbr fl 'wine "/home/zach/.wine/dosdevices/c:/Program\ Files/Image-Line/FL\ Studio\ 20/FL.exe"'
     abbr ableton 'wine start /unix "/home/zach/.wine/dosdevices/c:/ProgramData/Ableton/Live 11 Suite/Program/Ableton Live 11 Suite.exe"'
     abbr orb 'bash /home/zach/scripts/org-roam-backup.sh '
+
 end
 
-# Load env
+# =============================================================================
+# Custom Functions
+# =============================================================================
+
+# --- Environment File Loader ---
+# Loads variables from ~/dotfiles/.env into the shell environment.
 function loadenv
     if test -f ~/dotfiles/.env
         while read -la line
@@ -153,7 +180,10 @@ function __auto_loadenv --on-variable PWD
     end
 end
 
-# =============================================================================
+
+# --- Zoxide (Smart Directory Jumper) ---
+# ⚠ NOTE: This appears to be a hand-written/inlined version rather than
+#   using `zoxide init fish | source`. Consider migrating to the official init.
 #
 # Utility functions for zoxide.
 #
@@ -260,8 +290,15 @@ alias cdi=__zoxide_zi
 #   zoxide init fish | source
 
 
+
+# --- The Fuck (Command Correction) ---
 thefuck --alias | source
 # Print an optspec for argparse to handle cmd's options that are independent of any subcommand.
+
+# --- Tod CLI — Completion Helpers ---
+# ⚠ DUPLICATE: __fish_tod_needs_command and __fish_tod_global_optspecs are also
+#   defined in completions/tod.fish (which also defines __fish_tod_using_subcommand).
+#   Consider removing these from config.fish and relying on the completions file.
 function __fish_tod_global_optspecs
 	string join \n v/verbose c/config= t/timeout= h/help V/version
 end
@@ -279,6 +316,9 @@ function __fish_tod_needs_command
 	end
 	return 0
 end
+
+# --- Atuin Shell History ---
+# Provides fuzzy history search (Ctrl+R), history sync, and stats.
 set -gx ATUIN_SESSION (atuin uuid)
 set --erase ATUIN_HISTORY_ID
 
@@ -359,8 +399,11 @@ bind \cr _atuin_search
 if bind -M insert > /dev/null 2>&1
 bind -M insert \cr _atuin_search
 end
+
+# --- Instagram CLI — Completions (auto-generated) ---
 complete --command instagram --no-files --arguments "(env _INSTAGRAM_COMPLETE=complete_fish _TYPER_COMPLETE_FISH_ACTION=get-args _TYPER_COMPLETE_ARGS=(commandline -cp) instagram)" --condition "env _INSTAGRAM_COMPLETE=complete_fish _TYPER_COMPLETE_FISH_ACTION=is-args _TYPER_COMPLETE_ARGS=(commandline -cp) instagram"
-# fish completion for hyprdynamicmonitors                  -*- shell-script -*-
+# --- Hyprdynamicmonitors — Completions (auto-generated) ---
+
 
 function __hyprdynamicmonitors_debug
     set -l file "$BASH_COMP_DEBUG_FILE"
@@ -596,9 +639,12 @@ complete -c hyprdynamicmonitors -n 'not __hyprdynamicmonitors_requires_order_pre
 # otherwise we use the -k flag
 complete -k -c hyprdynamicmonitors -n '__hyprdynamicmonitors_requires_order_preservation && __hyprdynamicmonitors_prepare_completions' -f -a '$__hyprdynamicmonitors_comp_results'
 
+
+# --- Load Environment from .env ---
 loadenv
 
-# fish completion for timetrace
+
+# --- Timetrace — Completions (auto-generated) ---
 
 function __timetrace_debug
     set -l file "$BASH_COMP_DEBUG_FILE"
@@ -775,7 +821,9 @@ complete -c timetrace -e
 complete -c timetrace -n '__timetrace_prepare_completions' -f -a '$__timetrace_comp_results'
 
 
+
 complete -c yt-x --no-files --arguments "completions" --condition 'not __fish_contains_opt sort-by S e edit-config s preferred-selector  E generate-desktop-entry rofi-theme'
+# --- yt-x — Completions (auto-generated) ---
 
 complete -c yt-x --no-files --short-option h --long-option help --description 'Print a short help text and exit'
 complete -c yt-x --no-files --short-option v --long-option version --description 'Print a short version string and exit' --condition 'not __fish_seen_subcommand_from completions'
@@ -797,4 +845,7 @@ complete -c yt-x --no-files --short-option S --long-option search --description 
 complete -c yt-x --no-files --short-option z --long-option zsh --description 'print zsh completions' --condition '__fish_seen_subcommand_from completions'
 complete -c yt-x --no-files --short-option b --long-option bash --description 'print bash completions' --condition '__fish_seen_subcommand_from completions'
 complete -c yt-x --no-files --short-option f --long-option fish --description 'print fish completions' --condition '__fish_seen_subcommand_from completions'
+# --- Fish Behavior Tweaks ---
+# Disable autosuggestions (set universally, persists across sessions)
 set -U fish_autosuggestion_enabled 0
+
