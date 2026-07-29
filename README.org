@@ -3,4 +3,4 @@
 If you have any questions/suggestions please create an issue and/or send me an email to ~zacharymd14@gmail.com~.
 
 ** To-Do
-- organize ~init.el~
+- 
