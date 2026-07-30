@@ -1124,7 +1124,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(lsp-headerline-breadcrumb-path-face ((t (:inherit font-lock-string-face :family "Fira Code"))))
- '(mode-line ((t (:background "#282c34"))))
- '(mode-line-inactive ((t (:background "#1c1f24")))))
+ '(mode-line ((t (:background "#242424"))))
+ '(mode-line-inactive ((t (:background "#0B0C0E")))))
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
