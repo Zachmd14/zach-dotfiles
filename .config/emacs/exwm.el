@@ -52,37 +52,37 @@
 (exwm-randr-mode)
 
 (setq exwm-randr-workspace-monitor-plist
-      '(0 "HDMI-2" 1 "HDMI-2"   2 "DP-1"   3 "DP-1"   4 "DP-1"
-          5 "DP-1" 6 "DP-1" 7 "DP-1" 8 "DP-1" 9 "DP-1"))
+      '(0 "HDMI2" 1 "HDMI2"   2 "DP1"   3 "DP1"   4 "DP1"
+          5 "DP1" 6 "DP1" 7 "DP1" 8 "DP1" 9 "DP1"))
 
 (add-hook 'exwm-randr-screen-change-hook
           (lambda ()
             (let* ((connected (shell-command-to-string
                                "xrandr | grep ' connected' | awk '{print $1}'"))
                    (screens   (split-string connected "\n" t))
-                   (has-dp1   (member "DP-1"   screens))
-                   (has-hdmi2 (member "HDMI-2" screens)))
+                   (has-dp1   (member "DP1"   screens))
+                   (has-hdmi2 (member "HDMI2" screens)))
               (cond
                ((and has-dp1 has-hdmi2)
                 (start-process-shell-command "xrandr" nil
-					     "xrandr --output eDP-1 --off \
-                          --output DP-1 --primary --auto \
-                          --output HDMI-2 --left-of DP-1 --rotate left --auto"))
+					     "xrandr --output eDP1 --off \
+                          --output DP1 --primary --auto \
+                          --output HDMI2 --left-of DP1 --rotate left --auto"))
                (has-dp1
                 (start-process-shell-command "xrandr" nil
-					     "xrandr --output eDP-1 --primary --auto \
-                          --output DP-1 --right-of eDP-1 --auto \
-                          --output HDMI-2 --off"))
+					     "xrandr --output eDP1 --primary --auto \
+                          --output DP1 --right-of eDP1 --auto \
+                          --output HDMI2 --off"))
                (has-hdmi2
                 (start-process-shell-command "xrandr" nil
-					     "xrandr --output eDP-1 --primary --auto \
-                          --output HDMI-2 --left-of eDP-1 --auto \
-                          --output DP-1 --off"))
+					     "xrandr --output eDP1 --primary --auto \
+                          --output HDMI2 --left-of eDP1 --auto \
+                          --output DP1 --off"))
                (t
                 (start-process-shell-command "xrandr" nil
-					     "xrandr --output eDP-1 --primary --auto \
-                          --output DP-1 --off \
-                          --output HDMI-2 --off"))))))
+					     "xrandr --output eDP1 --primary --auto \
+                          --output DP1 --off \
+                          --output HDMI2 --off"))))))
 
 ;; ---------------------------------------------------------------------------
 ;; EXWM Core — workspace, keybindings, simulation keys, helm
