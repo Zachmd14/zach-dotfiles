@@ -145,10 +145,15 @@
   (setq dashboard-set-heading-icons t)
   (setq dashboard-set-file-icons t))
 
-(add-hook 'after-init-hook
-          (lambda ()
-            (require 'dashboard)
-            (dashboard-open)))
+(defun my/startup-split-layout ()
+  (require 'dashboard)
+  (dashboard-open)
+  (split-window-right)
+  (other-window 1)
+  (org-agenda nil "d")
+  )
+
+(add-hook 'after-init-hook #'my/startup-split-layout)
 
 ;; ---------------------------------------------------------------------------
 ;; Evil mode — Vim keybindings
