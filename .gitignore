@@ -79,3 +79,7 @@
 !.config/fish/config.fish
 !.config/fish/
 .project
+
+.config/opencode/*
+!.config/opencode/agents/*
+!.config/opencode/opencode.jsonc
