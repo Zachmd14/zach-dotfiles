@@ -14,6 +14,7 @@
 (setq project-vc-extra-root-markers '(".project"))
 
 (scroll-bar-mode -1)
+(visual-line-mode 1)
 (tool-bar-mode -1)
 (tooltip-mode -1)
 (menu-bar-mode -1)
@@ -153,7 +154,7 @@
   (org-agenda nil "d")
   )
 
-(add-hook 'after-init-hook #'my/startup-split-layout)
+(add-hook 'emacs-startup-hook #'my/startup-split-layout t)
 
 ;; ---------------------------------------------------------------------------
 ;; Evil mode — Vim keybindings
@@ -1092,7 +1093,7 @@
    '(aggressive-indent all-the-icons-dired amx anki anki-editor
 		       auctex-latexmk auto-complete backlight
 		       basic-c-compile benchmark-init bm
-		       browse-kill-ring burly calibredb
+		       browse-kill-ring burly calibredb cdlatex
 		       centered-cursor-mode comment-tags company
 		       counsel dap-mode dashboard dashboard-hackernews
 		       disable-mouse doom-modeline doom-themes elcord
