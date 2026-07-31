@@ -299,7 +299,7 @@
 (use-package company
   :config
   (global-company-mode 1)
-  (setq company-idle-delay 0.5
+  (setq company-idle-delay 0
         company-minimum-prefix-length 1
         company-show-numbers nil
         company-tooltip-limit 10
@@ -567,6 +567,7 @@
 (use-package org
   :hook (
          (org-mode . org-indent-mode)
+	 (org-mode . org-cdlatex-mode)
          )
   :config
   (setq-default org-ellipsis " …")
