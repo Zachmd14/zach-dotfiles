@@ -81,5 +81,5 @@
 .project
 
 .config/opencode/*
-!.config/opencode/agents/*
+!.config/opencode/agents/
 !.config/opencode/opencode.jsonc
