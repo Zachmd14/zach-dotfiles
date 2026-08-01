@@ -567,6 +567,7 @@
 (use-package org
   :hook (
          (org-mode . org-indent-mode)
+	 (org-mode . cdlatex-mode)
 	 (org-mode . org-cdlatex-mode)
          )
   :config
@@ -579,12 +580,21 @@
   (setq org-startup-indented t)
   (setq org-preview-latex-default-process 'dvipng)
   (setq org-preview-latex-remove-previous-images nil)
+  (setq org-confirm-babel-evaluate nil)
   (with-eval-after-load 'org
     (add-to-list 'org-latex-packages-alist '("" "amsmath"   t))
     (add-to-list 'org-latex-packages-alist '("" "amssymb"   t))
     (add-to-list 'org-latex-packages-alist '("" "mathtools" t))
     (add-to-list 'org-latex-packages-alist '("" "mathrsfs"  t))
     (add-to-list 'org-latex-packages-alist '("" "mhchem"    t))))
+
+(with-eval-after-load 'org
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((C . t)
+     (emacs-lisp . t)
+     (org . t)
+     (latex . t))))
 
 ;; ---------------------------------------------------------------------------
 ;; Org agenda
@@ -776,8 +786,8 @@
                          (org-time-string-to-absolute (org-read-date nil nil ""))))
                (delta (/ (+ 1 delta) 30.0))
                (face (cond
-                       ((< delta 1.00) 'nano-default)
-                       (t 'nano-faded))))
+                      ((< delta 1.00) 'nano-default)
+                      (t 'nano-faded))))
           (concat
            (propertize " " 'face nil
                        'display (svg-lib-progress-pie
@@ -1130,8 +1140,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(lsp-headerline-breadcrumb-path-face ((t (:inherit font-lock-string-face :family "Fira Code"))))
- '(mode-line ((t (:background "#242424"))))
- '(mode-line-inactive ((t (:background "#0B0C0E")))))
+ '(lsp-headerline-breadcrumb-path-face ((t (:inherit font-lock-string-face :family "Fira Code")))))
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
