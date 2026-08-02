@@ -104,11 +104,14 @@
   :custom (doom-modeline-height 15))
 
 ;; ---------------------------------------------------------------------------
-;; AI — DeepSeek
+;; AI 
 ;; ---------------------------------------------------------------------------
 
 (use-package deepseek
   :load-path "/home/zach/.config/emacs/lisp/deepseek.el")
+
+(add-to-list 'load-path "/home/zach/.config/emacs/lisp/emacs-opencode")
+(require 'emacs-opencode)
 
 ;; ---------------------------------------------------------------------------
 ;; Dashboard
@@ -364,7 +367,10 @@
 (use-package yasnippet
   :hook ((text-mode prog-mode conf-mode snippet-mode) . yas-minor-mode-on)
   :init (setq yas-snippet-dir "~/.config/emacs/snippets")
-  )
+  :config
+  (define-key yas-minor-mode-map (kbd "TAB") nil)
+  (define-key yas-minor-mode-map (kbd "<tab>") nil)
+  (define-key yas-minor-mode-map (kbd "C-l") #'yas-expand))
 
 ;; ---------------------------------------------------------------------------
 ;; Formatting — Format-all
