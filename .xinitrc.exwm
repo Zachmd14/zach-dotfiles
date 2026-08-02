@@ -1,0 +1,48 @@
+#!/bin/sh
+# ~/.xinitrc.exwm
+
+# Désactiver le contrôle d'accès X11 pour l'utilisateur courant
+xhost +SI:localuser:"$USER"
+
+# Écran : eDP-1 uniquement (ajouter d'autres écrans ici plus tard)
+xrandr --output eDP-1 --primary --auto
+
+# Extinction de l'écran après 10 min d'inactivité
+xset s 600 600
+xset dpms 600 600 600
+
+# Launch xss-lock to trigger xsecurelock on X11 screensaver / suspend events
+xss-lock -- i3lock -n &
+
+# xautolock -time 10 -locker i3lock -detectsleep \
+#  -corners +0-0 \
+#  -cornerdelay 5 \
+#  -cornerredelay 60
+
+# Cacher le curseur souris après 3s d'inactivité (optionnel, nécessite unutter)
+unclutter --timeout 3 &
+
+keynav &
+
+# Charge le thème de curseur AVANT de définir le curseur racine
+xrdb ~/.Xresources
+
+# Curseur par défaut (utilisera maintenant le thème chargé)
+xsetroot -cursor_name left_ptr
+
+/usr/lib/xdg-desktop-portal -r &
+/usr/lib/xdg-desktop-portal-gtk -r &
+
+# Lancer Emacs en mode daemon avec EXWM activé en argument CLI
+# (exwm-enable) n'est PAS dans init.el, c'est intentionnel :
+# ça permet de lancer Emacs sous un autre WM sans activer EXWM.
+export VISUAL="emacsclient"
+export EDITOR="emacsclient"
+
+/usr/bin/emacs --daemon --init-directory ~/.config/emacs &
+
+# Attendre que le daemon soit prêt
+while ! emacsclient -e '(message "ready")' &>/dev/null; do
+        sleep 0.2
+done
+exec emacsclient -c
