@@ -258,6 +258,12 @@
             helm-source-recentf))))
 
 ;; ---------------------------------------------------------------------------
+;; Custom
+;; ---------------------------------------------------------------------------
+(add-to-list 'exwm-manage-configurations
+  '((string-match "mouseless_overlay" exwm-title) floating t))
+
+;; ---------------------------------------------------------------------------
 ;; Startup — safely initialize EXWM when the first graphical frame is ready
 ;; ---------------------------------------------------------------------------
 (defun my/run-exwm-once-started ()

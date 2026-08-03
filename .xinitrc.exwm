@@ -22,7 +22,9 @@ xss-lock -- i3lock -n &
 # Cacher le curseur souris après 3s d'inactivité (optionnel, nécessite unutter)
 unclutter --timeout 3 &
 
-keynav &
+picom
+
+flatpak run net.sonuscape.mouseless
 
 # Charge le thème de curseur AVANT de définir le curseur racine
 xrdb ~/.Xresources

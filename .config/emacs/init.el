@@ -556,9 +556,6 @@
 
 (setq backup-inhibited t)
 
-(add-hook 'focus-in-hook  (lambda () (my/set-frame-opacity '(89 . 75))))
-(add-hook 'focus-out-hook (lambda () (my/set-frame-opacity '(89 . 75))))
-(add-to-list 'default-frame-alist '(alpha . (89 . 75)))
 (display-battery-mode 1)
 (display-time-mode 1)
 
@@ -1063,6 +1060,10 @@
 (global-set-key (kbd "C-x 1") #'toggle-delete-other-windows)
 
 (setq gc-cons-threshold 50000000)
+
+
+(set-frame-parameter nil 'alpha '(100 . 100))
+(add-to-list 'default-frame-alist '(alpha . (100 . 100)))
 
 ;; ============================================================================
 ;; CUSTOM — auto-generated, do not edit manually
