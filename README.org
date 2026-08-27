@@ -1,6 +1,27 @@
-* Zach Archlinux Dotfiles
+#+TITLE: zach-dotfiles
+#+DESCRIPTION: Personal dotfiles for Arch Linux | keyboard-first, Emacs-centric workflow.
 
-If you have any questions/suggestions please create an issue and/or send me an email to ~zacharymd14@gmail.com~.
+Personal dotfiles for Arch Linux — terminal-first, Emacs-centric workflow.
 
-** To-Do
-- 
+* Contents
+| Path                 | Description                                                              |
+|----------------------+--------------------------------------------------------------------------|
+| ~.config/emacs/~     | Emacs config including [[https://github.com/emacs-exwm/exwm][EXWM]] window manager (~exwm.el~, ~early-init.el~, ~init.el~) |
+| ~.config/fish/~      | Fish shell configuration                                                 |
+| ~.config/kitty/~     | Kitty terminal config with multiple color themes                         |
+| ~.config/opencode/~  | [[https://opencode.ai][opencode]] config with custom agents                     |
+| ~.config/fetch/~     | System fetch script config                                               |
+| ~.xinitrc.exwm~      | X init script for starting EXWM                                         |
+
+* Usage
+Clone and symlink the configs you want into =~=:
+
+#+begin_src sh
+git clone https://github.com/Zachmd14/zach-dotfiles.git
+ln -s "$PWD/zach-dotfiles/.config" ~/.config
+#+end_src
+
+Optionally source =private.fish= (machine-specific) from =~/.config/fish/=.
+
+* Contact
+Questions or suggestions? Open an issue, or email [[mailto:zacharymd14@gmail.com][zacharymd14@gmail.com]].
